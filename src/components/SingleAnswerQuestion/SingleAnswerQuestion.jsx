@@ -13,13 +13,12 @@ function SingleAnswerQuestion({ heading, question, variant = 'h1', state, input,
                 label={input.label}
                 name={input.name}
                 type={input.type}
-                value={inputValues[input.name] || ''}
+                value={inputValues[input.name] || input.ans}
                 // onChange={(e) => { input.ans = e.target.value }}
                 onChange={(e) => { input.ans = e.target.value; handleInputChange(e) }}
                 placeholder={input?.placeholder && input.placeholder}
             />
-            <span>{state}</span>
-            {console.log("The State are: ", state)}
+
         </div>
     )
 }

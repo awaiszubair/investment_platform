@@ -10,11 +10,8 @@ function MultipleAnswerQuestion({ heading, question, input, handleInputChange, i
                 name={input.name}
                 // onChange={(e) => { input.ans = e.target.value }}
                 onChange={(e) => { input.ans = e.target.value; handleInputChange(e) }}
-                value={inputValues[input.name] || ''}
-                aria-labelledby="demo-radio-buttons-group-label"
-            // sx={
-            //     { ...style }
-            // }
+                value={inputValues[input.name] || input.ans}
+
 
             >
                 {input.options && input.options.map((ds) => (

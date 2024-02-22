@@ -15,8 +15,16 @@ import Basic from './pages/Basic'
 import Advance from './pages/Advance';
 import Inform from './pages/Inform';
 import Request from './pages/Request';
+import { useDispatch, useSelector } from 'react-redux';
+import { Outlet } from 'react-router-dom';
+import { useState } from 'react';
+import { login, logout } from './store/authSlice';
 
 function App() {
+
+  const [loading, setLoading] = useState(true);
+  const authStatus = useSelector((state) => state.auth.status)
+  const dispatch = useDispatch();
 
   const location = useLocation();
 
@@ -25,16 +33,27 @@ function App() {
     window.scroll({ top: 0 })
     document.querySelector('html').style.scrollBehavior = ''
   }, [location.pathname]); // triggered on route change
-
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(login())
+    }
+    else {
+      dispatch(logout())
+    }
+  }, [authStatus])
   return (
     <>
-      <Routes>
-        <Route exact path="/" element={<Dashboard />} />
-        <Route path="/basic" element={<Basic />} />
-        <Route path="/inform" element={<Inform />} />
-        <Route path="/advance" element={<Advance />} />
-        <Route path='/request' element={<Request />} />
-      </Routes>
+      {!authStatus ?
+        <>
+          <main className='main'><Outlet /></main>
+        </>
+        :
+        <>
+          <Outlet />
+        </>
+      }
+
     </>
   );
 }

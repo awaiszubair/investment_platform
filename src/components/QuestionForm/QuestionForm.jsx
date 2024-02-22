@@ -1,10 +1,8 @@
 import React, { useId, useState } from 'react'
-import config from '../../Config_array';
-import { useForm } from "react-hook-form"
 import SingleAnswerQuestion from '../SingleAnswerQuestion/SingleAnswerQuestion';
 import MultipleAnswerQuestion from '../MultipleAnswerQuestion/MultipleAnswerQuestion';
 
-function QuestionForm({ handleInputChange, inputValues, isactive }) {
+function QuestionForm({ handleInputChange, inputValues, isactive, data }) {
 
 
     function renderComponents(components) {
@@ -47,7 +45,7 @@ function QuestionForm({ handleInputChange, inputValues, isactive }) {
     }
     return (
         <div>
-            {renderSections(config[isactive])}
+            {renderSections(data[isactive])}
         </div>
     )
 }

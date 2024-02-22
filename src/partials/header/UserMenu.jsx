@@ -3,13 +3,25 @@ import { Link } from 'react-router-dom';
 import Transition from '../../utils/Transition';
 
 import UserAvatar from '../../images/user-avatar-32.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../store/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 function UserMenu() {
-
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  const authStatus = useSelector((state) => state.auth.status)
+  const navigate = useNavigate();
 
   const trigger = useRef(null);
   const dropdown = useRef(null);
+
+  useEffect(() => {
+    if (!authStatus) {
+      return navigate('/login')
+    }
+  }, [authStatus])
 
   // close on click outside
   useEffect(() => {
@@ -82,7 +94,7 @@ function UserMenu() {
               <Link
                 className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
                 to="/"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={() => { localStorage.clear('token'); dispatch(logout()) }}
               >
                 Sign Out
               </Link>
