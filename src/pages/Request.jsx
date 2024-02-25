@@ -16,9 +16,12 @@ import { TextField } from '@mui/material';
 import { formService } from '../mysql/form';
 import { Container } from '@mui/material';
 import { useForm } from 'react-hook-form'
+import pointsChecker from '../../src/Points_array';
+import PdfGeneration from '../components/PdfGeneration/PdfGeneration';
+import { pdf } from '@react-pdf/renderer';
 import QuestionForm from '../components/QuestionForm/QuestionForm';
 
-const steps = ['Introduction', 'Stocks', 'Liability'];
+const steps = ['Investment Goals', 'Risk Appetite', 'Investment Experience'];
 
 function Request() {
     const [search, setSearch] = useState('');
@@ -35,6 +38,8 @@ function Request() {
             [name]: value
         }));
     };
+
+
 
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
@@ -93,6 +98,34 @@ function Request() {
         }
     }
 
+    const mailPdf = async () => {
+        if (activeStep == steps.length - 1) {
+            const userData = pointsChecker(inputValues);
+            // console.log("Pointing the points: ", userData);
+            console.log("The input Values is: ", inputValues);
+            try {
+                const blob = await pdf(<PdfGeneration data={userData} inputValues={inputValues} />).toBlob();
+                const pdfFile = new File([blob], 'document.pdf', { type: 'application/pdf' });
+                const formData = new FormData();
+                formData.append('pdfFile', pdfFile);
+                formData.append('userData', JSON.stringify(userData));
+                formData.append('email', JSON.stringify(search))
+                const response = await fetch('http://localhost:3000/api/mail/broker', {
+                    method: 'POST',
+                    headers: {
+                        'x-auth-token': localStorage.getItem('token') // Replace 'your-auth-token-value' with your actual token
+                    },
+                    body: formData,
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to upload PDF file');
+                }
+                console.log('PDF file uploaded successfully');
+            } catch (error) {
+                console.error('Error uploading PDF:', error);
+            }
+        }
+    }
 
     return (
         <div className="flex h-screen overflow-hidden">
@@ -160,8 +193,8 @@ function Request() {
                                     ) : (
                                         <React.Fragment>
                                             {/* <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography> */}
-                                            {activeStep == 0 && <QuestionForm handleInputChange={handleInputChange} inputValues={inputValues} isactive={activeStep} data={data} />}
-                                            {activeStep && <QuestionForm handleInputChange={handleInputChange} inputValues={inputValues} isactive={activeStep} data={data} />}
+                                            {activeStep == 0 && <QuestionForm handleInputChange={handleInputChange} inputValues={inputValues} isactive={activeStep} data={data} setInputValues={setInputValues} />}
+                                            {activeStep && <QuestionForm handleInputChange={handleInputChange} inputValues={inputValues} isactive={activeStep} data={data} setInputValues={setInputValues} />}
 
                                             {/* {activeStep === 2 && <ThirdPage register={register} />} */}
                                             {console.log(watch())}
@@ -176,7 +209,7 @@ function Request() {
                                                 </Button>
                                                 <Box sx={{ flex: '1 1 ' }} />
 
-                                                <Button variant="contained" onClick={handleNext}>
+                                                <Button variant="contained" onClick={() => { handleNext(); mailPdf() }}>
                                                     {activeStep === steps.length - 1 ? 'Confirm' : 'Next'}
                                                 </Button>
 

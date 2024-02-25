@@ -1,7 +1,15 @@
 import { TextField, RadioGroup, FormControlLabel, Radio } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 
-function MultipleAnswerQuestion({ heading, question, input, handleInputChange, inputValues }) {
+function MultipleAnswerQuestion({ heading, question, input, handleInputChange, inputValues, setInputValues }) {
+    useEffect(() => {
+        setInputValues(prevState => ({
+            ...prevState,
+            [input.name]: input.ans
+        }));
+
+        console.log('UseEffect Function Ran', inputValues);
+    }, [])
     return (
         <div style={{ marginTop: '1rem' }}>
             <h3>{heading && heading}</h3>
