@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { CircularProgress } from '@mui/material';
+import { useAuth0 } from '@auth0/auth0-react';
 
-function ProtectedRoutes({ children }) {
+function ProtectedRoutes({ children, ...props }) {
     const authStatus = useSelector((state) => state.auth.status);
     const [loader, setLoader] = useState(true);
+    const { isAuthenticated } = useAuth0();
+    const location = useLocation();
     const navigate = useNavigate();
     useEffect(() => {
-        if (!authStatus) {
-            return navigate('/login');
+        if (!isAuthenticated) {
+            navigate('/');
         }
-        setTimeout(() => {
-            setLoader(false)
-        }, 2000);
-    }, [authStatus, loader])
+        else {
+            navigate(location.pathname);
+        }
+        setLoader(false);
+    }, [isAuthenticated, loader])
     return (
         loader ? <CircularProgress color="primary" /> : <>{children}</>
     )

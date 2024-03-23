@@ -20,6 +20,7 @@ import pointsChecker from '../../src/Points_array';
 import PdfGeneration from '../components/PdfGeneration/PdfGeneration';
 import { pdf } from '@react-pdf/renderer';
 import QuestionForm from '../components/QuestionForm/QuestionForm';
+import { useParams } from 'react-router-dom';
 
 const steps = ['Investment Goals', 'Risk Appetite', 'Investment Experience'];
 
@@ -43,6 +44,7 @@ function Request() {
 
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set());
+    const { token } = useParams();
     const isStepOptional = (step) => {
         return step === 1;
     };
@@ -98,6 +100,25 @@ function Request() {
         }
     }
 
+    useEffect(() => {
+        const sanitizedToken = token.replace(/\-/g, '.');
+        const formfetch = async () => {
+            try {
+                const response = await formService.fetchFormByLink(sanitizedToken);
+                console.log(response);
+                if (response) {
+                    setLoader(false);
+                }
+                setData(response);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        formfetch()
+        console.log("The normal token is: ", token);
+        console.log("The token is :", sanitizedToken);
+    }, [])
+
     const mailPdf = async () => {
         if (activeStep == steps.length - 1) {
             const userData = pointsChecker(inputValues);
@@ -145,7 +166,7 @@ function Request() {
                         {/* Dashboard actions */}
 
 
-                        <Box>
+                        {/* <Box>
                             <TextField
                                 variant='filled'
                                 id="outlined-basic"
@@ -157,7 +178,7 @@ function Request() {
                                 onClick={searchForm}
                             >Search</Button>
                             {console.log(data)}
-                        </Box>
+                        </Box> */}
                         {
                             data && <Container maxWidth="md" sx={{ padding: '2rem' }}>
                                 <Box sx={{ width: '100%' }}>

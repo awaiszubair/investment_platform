@@ -6,6 +6,7 @@ import UserAvatar from '../../images/user-avatar-32.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../store/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 
 function UserMenu() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -13,15 +14,16 @@ function UserMenu() {
   const dispatch = useDispatch();
   const authStatus = useSelector((state) => state.auth.status)
   const navigate = useNavigate();
+  const { logout, isAuthenticated } = useAuth0();
 
   const trigger = useRef(null);
   const dropdown = useRef(null);
 
-  useEffect(() => {
-    if (!authStatus) {
-      return navigate('/login')
-    }
-  }, [authStatus])
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     return navigate('/')
+  //   }
+  // }, [isAuthenticated])
 
   // close on click outside
   useEffect(() => {
@@ -94,7 +96,7 @@ function UserMenu() {
               <Link
                 className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
                 to="/"
-                onClick={() => { localStorage.clear('token'); dispatch(logout()) }}
+                onClick={logout}
               >
                 Sign Out
               </Link>
