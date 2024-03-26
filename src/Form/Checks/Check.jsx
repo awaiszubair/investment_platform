@@ -33,7 +33,8 @@ function Checks() {
         const email = user.email
         const fetch = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/api/link/${email}`)
+                const response = await axios.get(`https://2965-111-88-158-73.ngrok-free.app/api/link/${email}`)
+                console.log("Dt is: ", response.data);
                 const dt = response.data.map((dt) => {
                     const id = dt.id
                     const status = dt.update_status;

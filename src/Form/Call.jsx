@@ -83,9 +83,9 @@ function Call() {
         const id = uuidv4();
         try {
             const formData = JSON.stringify(data);
-            const response = await axios.post('http://localhost:3000/api/link', { id, user, formData })
+            const response = await axios.post('https://2965-111-88-158-73.ngrok-free.app/api/link', { id, user, formData })
             // const sanitizedToken = token.replace(/\./g, '-');
-            const tempLink = `http://localhost:5174/${response.data.id}`
+            const tempLink = `https://3c96-111-88-158-73.ngrok-free.app/${response.data.id}`
             setLink(tempLink)
             console.log(response.data)
         } catch (error) {

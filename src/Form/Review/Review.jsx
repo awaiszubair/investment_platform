@@ -50,7 +50,7 @@ function Review() {
         const fetch = async () => {
             const id = location.state.data.id;
             try {
-                const response = await axios.get(`http://localhost:3000/api/form/data/${id}`)
+                const response = await axios.get(` https://2965-111-88-158-73.ngrok-free.app/api/form/data/${id}`)
                 console.log(response.data[0].client_data);
                 const parse = JSON.parse(response.data[0].client_data)
                 console.log("FormData is");
@@ -73,7 +73,7 @@ function Review() {
                 try {
                     const data2 = JSON.stringify(data);
                     console.log("The Actual is: ", data);
-                    const response = await axios.put('http://localhost:3000/api/link', { id: broker.id, data2 })
+                    const response = await axios.put('https://2965-111-88-158-73.ngrok-free.app/api/link', { id: broker.id, data2 })
                     console.log(response);
                     setMsg(response.data.msg)
                 } catch (error) {
@@ -154,6 +154,7 @@ function Review() {
                     register={register}
                     value={formData?.name1}
                     watch={watch}
+                    display={true}
                 />
                 {console.log("The formData 1 is: " + formData?.name1)}
                 {console.log("The FormData 2 is: " + formData?.name2)}
@@ -172,6 +173,7 @@ function Review() {
                         "Short-term, i.e., for a period of 1 to 3 years (e.g., I have short-term plans that I need to finance).",
                         "Very short-term, i.e., up to 1 year.",
                         "OTHER"
+
                     ]}
                     watch={watch}
                     register={register}
@@ -179,6 +181,8 @@ function Review() {
                     errorFlag={errorFlag}
                     setErrorFlag={setErrorFlag}
                     unregister={unregister}
+                    display={true}
+
                 />
                 {/* } */}
                 {/* } */}
@@ -207,6 +211,7 @@ function Review() {
                 register={register}
                 // value={location.state.data.formData?.name3}
                 value={formData?.name3}
+                display={true}
 
 
 
@@ -236,7 +241,6 @@ function Review() {
                 // value={location.state.data.formData?.name4}
                 value={formData?.name4}
 
-
             // value={formData?.name4}
             />
             {/* } */}
@@ -258,6 +262,7 @@ function Review() {
                 // value={location.state.data.formData?.name5}
                 value={formData?.name5}
 
+                display={true}
 
                 watch={watch}
 

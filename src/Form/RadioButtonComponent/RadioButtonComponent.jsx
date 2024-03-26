@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { TextField, RadioGroup, FormControlLabel, Radio, FormControl, Button, Box, Typography } from '@mui/material';
 import TextBoxComponent from '../TextBoxComponent/TextBoxComponent';
 
-function RadioButtonComponent({ heading, question, name, register, watch, options, value }) {
+function RadioButtonComponent({ heading, question, name, register, watch, options, value, display = false }) {
     const [state, setState] = useState('');
     const [flag, setFlag] = useState(false);
     const [textflag, setTextflag] = useState(false); // Changed from string to boolean
@@ -70,14 +70,14 @@ function RadioButtonComponent({ heading, question, name, register, watch, option
                                     />
                                 ))}
                             </RadioGroup>
-                            <Box sx={{ mt: '2rem', display: 'flex' }}>
+                            {display && <Box sx={{ mt: '2rem', display: 'flex' }}>
                                 <Typography sx={{ marginRight: '1rem' }}>
                                     <Button variant='contained' sx={{ bgcolor: 'red' }}>Reject</Button>
                                 </Typography>
                                 <Typography>
                                     <Button variant='contained' >Accept</Button>
                                 </Typography>
-                            </Box>
+                            </Box>}
                         </>
                         // {state === 'OTHER' &&
                         //     <TextBoxComponent
