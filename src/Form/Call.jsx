@@ -69,23 +69,29 @@ function Call() {
     }
 
     const submit = async (data) => {
-        times++
-        // try {
-        //     const formData = JSON.stringify(data)
-        //     const response = await axios.post('http://localhost:3000/api/form', { user, formData })
-        //     console.log(response.data);
-        //     setButtonState(true)
-        // } catch (error) {
-        //     console.log(error.message);
-        // }
-        // if (times == 2) {
-
         const id = uuidv4();
         try {
-            const formData = JSON.stringify(data);
-            const response = await axios.post('https://2965-111-88-158-73.ngrok-free.app/api/link', { id, user, formData })
-            // const sanitizedToken = token.replace(/\./g, '-');
-            const tempLink = `https://3c96-111-88-158-73.ngrok-free.app/${response.data.id}`
+
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('user', JSON.stringify(user)); // Assuming user is an object
+            formData.append('formData', JSON.stringify(data)); // Assuming formData is an object
+            console.log("The ID is: ", id);
+            formData.append('c_pfile', data.c_cfile[0]);
+            formData.append('c_cfile', data.c_pfile[0]);
+            formData.append('c_ifile', data.c_ifile[0]);
+
+            formData.append('b_pfile', data.b_cfile[0]);
+            formData.append('b_cfile', data.b_pfile[0]);
+            formData.append('b_ifile', data.b_ifile[0]);
+
+
+            const response = await axios.post('http://localhost:3000/api/link', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data' // Set the content type to multipart/form-data
+                }
+            });
+            const tempLink = `http://localhost:5174/${response.data.id}`
             setLink(tempLink)
             console.log(response.data)
         } catch (error) {
@@ -138,15 +144,75 @@ function Call() {
                     <TextBoxComponent name='c_name' placeholder='Enter Your Name' label='FullName' register={register} watch={watch} />
                     <RadioButtonComponent heading='Select Gender' name='c_gender' options={['male', 'female']} register={register} watch={watch} />
                     <TextBoxComponent name='c_birth' placeholder='' label='PlaceOfBirth' register={register} watch={watch} />
-                    <TextBoxComponent name='c_permanentResidence' placeholder='' label='PermanentResidence' register={register} watch={watch} />
+
+                    <SubSection
+                        heading='Permanent Address'
+                    >
+                        <TextBoxComponent name='c_pstreetnumber' placeholder='' label='Street Number' register={register} watch={watch} />
+                        <TextBoxComponent name='c_phousenumber' placeholder='' label='House Number' register={register} watch={watch} />
+                        <TextBoxComponent name='c_pcity' placeholder='' label='City' register={register} watch={watch} />
+
+                        <input type="file" name="c_pfile" {...register("c_pfile")} />
+
+                        <TextBoxComponent name='c_pdocumentNumber' placeholder='' label='DocumentNumber' register={register} watch={watch} />
+                        <TextBoxComponent name='c_pdocumentIssue' placeholder='' label='DocumentIssuedBy' register={register} watch={watch} />
+
+                        <SubSection
+                            para="Valid Date"
+                        >
+                            <TextBoxComponent type='Date' name='c_pdate' register={register} />
+                        </SubSection>
+
+                    </SubSection>
+
+                    <SubSection
+                        heading='Correspondence Address'
+                    >
+                        <TextBoxComponent name='c_cstreetnumber' placeholder='' label='Street Number' register={register} watch={watch} />
+                        <TextBoxComponent name='c_chousenumber' placeholder='' label='House Number' register={register} watch={watch} />
+                        <TextBoxComponent name='c_ccity' placeholder='' label='City' register={register} watch={watch} />
+
+                        <input type="file" name="c_cfile" {...register("c_cfile")} />
+
+                        <TextBoxComponent name='c_cdocumentNumber' placeholder='' label='DocumentNumber' register={register} watch={watch} />
+                        <TextBoxComponent name='c_cdocumentIssue' placeholder='' label='DocumentIssuedBy' register={register} watch={watch} />
+
+                        <SubSection
+                            para="Valid Date"
+                        >
+                            <TextBoxComponent type='Date' name='c_cdate' register={register} />
+                        </SubSection>
+
+                    </SubSection>
+
+                    <SubSection
+                        heading='Identity documents'
+                    >
+                        <TextBoxComponent name='c_istreetnumber' placeholder='' label='Street Number' register={register} watch={watch} />
+                        <TextBoxComponent name='c_ihousenumber' placeholder='' label='House Number' register={register} watch={watch} />
+                        <TextBoxComponent name='c_icity' placeholder='' label='City' register={register} watch={watch} />
+
+                        <input type="file" name="c_ifile" {...register("c_ifile")} />
+
+                        <TextBoxComponent name='c_idocumentNumber' placeholder='' label='DocumentNumber' register={register} watch={watch} />
+                        <TextBoxComponent name='c_idocumentIssue' placeholder='' label='DocumentIssuedBy' register={register} watch={watch} />
+
+                        <SubSection
+                            para="Valid Date"
+                        >
+                            <TextBoxComponent type='Date' name='c_idate' register={register} />
+                        </SubSection>
+
+                    </SubSection>
+
                     <TextBoxComponent type='email' name='c_email' placeholder='' label='Email' register={register} watch={watch} />
                     <TextBoxComponent name='c_phoneNumber' placeholder='' label='PhoneNumber' register={register} watch={watch} />
                     <SelectComponent name='c_nationality' label='Select Country' options={countries} register={register} />
-                    <SubSection heading="Address">
-                        <TextBoxComponent name='c_documentNumber' placeholder='' label='DocumentNumber' register={register} watch={watch} />
+                    {/* <SubSection heading="Address"> */}
+                    {/* <TextBoxComponent name='c_documentNumber' placeholder='' label='DocumentNumber' register={register} watch={watch} />
                         <TextBoxComponent name='c_documentIssue' placeholder='' label='DocumentIssuedBy' register={register} watch={watch} />
-                        <TextBoxComponent type='Date' name='c_phoneNumber' register={register} />
-                    </SubSection>
+                        <TextBoxComponent type='Date' name='c_phoneNumber' register={register} /> */}
+                    {/* </SubSection> */}
                     <SelectComponent name='c_taxResidency' label='Tax Residency' options={countries} register={register} />
                     <TextBoxComponent name='c_taxId' placeholder='' label='Tax Id' register={register} watch={watch} />
                     <RadioButtonComponent heading='Copy of Document Obtained' name='c_documentCopy' options={['Yes', 'No']} register={register} watch={watch} />
@@ -155,17 +221,74 @@ function Call() {
                 </SubSection>
                 <SubSection heading='Broker Info'>
                     <TextBoxComponent name='b_name' placeholder='Enter Your Name' label='FullName' register={register} />
+                    <TextBoxComponent name='b_representative_name' placeholder='Enter Representative Name' label='Representative Name' register={register} />
                     <RadioButtonComponent heading='Select Gender' name='b_gender' options={['male', 'female']} register={register} watch={watch} />
                     <TextBoxComponent name='b_birth' placeholder='' label='PlaceOfBirth' register={register} />
-                    <TextBoxComponent name='b_permanentResidence' placeholder='' label='PermanentResidence' register={register} />
+
+
+                    <SubSection
+                        heading='Permanent Address'
+                    >
+                        <TextBoxComponent name='b_pstreetnumber' placeholder='' label='Street Number' register={register} watch={watch} />
+                        <TextBoxComponent name='b_phousenumber' placeholder='' label='House Number' register={register} watch={watch} />
+                        <TextBoxComponent name='b_pcity' placeholder='' label='City' register={register} watch={watch} />
+
+                        <input type="file" name="b_pfile" {...register("b_pfile")} />
+
+                        <TextBoxComponent name='b_pdocumentNumber' placeholder='' label='DocumentNumber' register={register} watch={watch} />
+                        <TextBoxComponent name='b_pdocumentIssue' placeholder='' label='DocumentIssuedBy' register={register} watch={watch} />
+
+                        <SubSection
+                            para="Valid Date"
+                        >
+                            <TextBoxComponent type='Date' name='b_pdate' register={register} />
+                        </SubSection>
+
+                    </SubSection>
+
+                    <SubSection
+                        heading='Correspondence Address'
+                    >
+                        <TextBoxComponent name='b_cstreetnumber' placeholder='' label='Street Number' register={register} watch={watch} />
+                        <TextBoxComponent name='b_chousenumber' placeholder='' label='House Number' register={register} watch={watch} />
+                        <TextBoxComponent name='b_ccity' placeholder='' label='City' register={register} watch={watch} />
+
+                        <input type="file" name="b_cfile" {...register("b_cfile")} />
+
+                        <TextBoxComponent name='b_cdocumentNumber' placeholder='' label='DocumentNumber' register={register} watch={watch} />
+                        <TextBoxComponent name='b_cdocumentIssue' placeholder='' label='DocumentIssuedBy' register={register} watch={watch} />
+
+                        <SubSection
+                            para="Valid Date"
+                        >
+                            <TextBoxComponent type='Date' name='b_cdate' register={register} />
+                        </SubSection>
+
+                    </SubSection>
+                    <SubSection
+                        heading='Identity documents'
+                    >
+                        <TextBoxComponent name='b_istreetnumber' placeholder='' label='Street Number' register={register} watch={watch} />
+                        <TextBoxComponent name='b_ihousenumber' placeholder='' label='House Number' register={register} watch={watch} />
+                        <TextBoxComponent name='b_icity' placeholder='' label='City' register={register} watch={watch} />
+
+                        <input type="file" name="b_ifile" {...register("b_ifile")} />
+
+                        <TextBoxComponent name='b_idocumentNumber' placeholder='' label='DocumentNumber' register={register} watch={watch} />
+                        <TextBoxComponent name='b_idocumentIssue' placeholder='' label='DocumentIssuedBy' register={register} watch={watch} />
+
+                        <SubSection
+                            para="Valid Date"
+                        >
+                            <TextBoxComponent type='Date' name='b_idate' register={register} />
+                        </SubSection>
+
+                    </SubSection>
+
                     <TextBoxComponent type='email' name='b_email' placeholder='' label='Email' register={register} />
                     <TextBoxComponent name='b_phone' placeholder='' label='Phone' register={register} />
                     <SelectComponent name='b_nationality' label='Select Country' options={countries} register={register} />
-                    <SubSection heading="Address">
-                        <TextBoxComponent name='b_documentNumber' placeholder='' label='DocumentNumber' register={register} />
-                        <TextBoxComponent name='b_documentIssue' placeholder='' label='DocumentIssuedBy' register={register} />
-                        <TextBoxComponent type='Date' name='c_date' register={register} />
-                    </SubSection>
+
                     <SelectComponent name='b_taxResidency' label='Tax Residency' options={countries} register={register} />
                     <TextBoxComponent name='b_taxId' placeholder='' label='Tax Id' register={register} />
                     <RadioButtonComponent heading='Copy of Document Obtained' name='b_documentCopy' options={['Yes', 'No']} register={register} />
@@ -543,7 +666,7 @@ function Call() {
             />
             <Container maxWidth='lg' >
 
-                <form onSubmit={handleSubmit(submit)} >
+                <form onSubmit={handleSubmit(submit)} enctype="multipart/form-data" >
                     {
                         component[state]
                     }

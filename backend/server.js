@@ -1,6 +1,7 @@
 const express = require('express');
 const jwtCheck = require('./middlwares/auth');
 const cors = require('cors');
+const db = require('./db/db');
 require('dotenv').config();
 
 console.log(process.env.JWTSECRET);
@@ -31,9 +32,20 @@ app.use('/api/mail', require('./routes/mail'));
 // Link
 app.use('/api/link', require('./routes/Link'));
 
-app.listen(3000, () => {
-    console.log("App is listening on port: ", 3000);
-})
+async function testConnection() {
+    try {
+        await db.authenticate();
+        console.log('Connection has been established successfully.');
+        app.listen(3000, () => {
+            console.log("App is listening on port: ", 3000);
+        })
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+    }
+}
+
+testConnection();
+
 
 
 

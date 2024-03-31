@@ -50,7 +50,7 @@ function Review() {
         const fetch = async () => {
             const id = location.state.data.id;
             try {
-                const response = await axios.get(` https://2965-111-88-158-73.ngrok-free.app/api/form/data/${id}`)
+                const response = await axios.get(`http://localhost:3000/api/form/data/${id}`)
                 console.log(response.data[0].client_data);
                 const parse = JSON.parse(response.data[0].client_data)
                 console.log("FormData is");
